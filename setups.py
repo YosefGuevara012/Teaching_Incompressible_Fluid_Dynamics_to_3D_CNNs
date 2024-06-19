@@ -7,20 +7,37 @@ ask-tell interface:
 ask(): ask for batch of v_cond(t),cond_mask(t),v(t),p(t)
 tell(v,p): tell results for v(t+1),p(t+1) of batch
 """
-submarine = torch.tensor(np.load('imgs/voxel_grid_Submarine.npy')).unsqueeze(0)
-fish = torch.tensor(np.load('imgs/voxel_grid_Fish.npy')).unsqueeze(0)
-cyber = torch.tensor(np.load('imgs/voxel_grid_Cyber.npy')).unsqueeze(0)
-wing = torch.tensor(np.load('imgs/voxel_grid_Wing.npy')).unsqueeze(0)
-two_objects = torch.tensor(np.load('imgs/voxel_grid_2_objects.npy')).unsqueeze(0)
-three_objects = torch.tensor(np.load('imgs/voxel_grid_3_objects.npy')).unsqueeze(0)
+# submarine = torch.tensor(np.load('imgs/voxel_grid_Submarine.npy')).unsqueeze(0)
+# fish = torch.tensor(np.load('imgs/voxel_grid_Fish.npy')).unsqueeze(0)
+# cyber = torch.tensor(np.load('imgs/voxel_grid_Cyber.npy')).unsqueeze(0)
+# wing = torch.tensor(np.load('imgs/voxel_grid_Wing.npy')).unsqueeze(0)
+# two_objects = torch.tensor(np.load('imgs/voxel_grid_2_objects.npy')).unsqueeze(0)
+# three_objects = torch.tensor(np.load('imgs/voxel_grid_3_objects.npy')).unsqueeze(0)
+# img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects,"torpedo":torpedo, "NPS":nps, "glider":glider, "AUV":auv} # here, you can add your own custom objects
+
+# The "object_h" denotes the orientation of the object following a heave motion.
+
+airfoil = torch.tensor(np.load('imgs/voxel_grid_Airfoil.npy')).unsqueeze(0)
+airfoil_h = torch.tensor(np.load('imgs/voxel_grid_Airfoil_h.npy')).unsqueeze(0)
+
+flat_fin = torch.tensor(np.load('imgs/voxel_grid_flat_fin.npy')).unsqueeze(0)
+flat_fin_h = torch.tensor(np.load('imgs/voxel_grid_flat_fin_h.npy')).unsqueeze(0)
+
+glider = torch.tensor(np.load('imgs/voxel_grid_Glider.npy')).unsqueeze(0)
+glider_h = torch.tensor(np.load('imgs/voxel_grid_Glider_h.npy')).unsqueeze(0)
+
+sphere = torch.tensor(np.load('imgs/voxel_grid_Sphere.npy')).unsqueeze(0)
 
 torpedo = torch.tensor(np.load('imgs/voxel_grid_torpedo.npy')).unsqueeze(0)
-nps = torch.tensor(np.load('imgs/voxel_grid_NPS.npy')).unsqueeze(0)
-glider = torch.tensor(np.load('imgs/voxel_grid_Glider.npy')).unsqueeze(0)
-auv = torch.tensor(np.load('imgs/voxel_grid_AUV.npy')).unsqueeze(0)
+torpedo_h = torch.tensor(np.load('imgs/voxel_grid_torpedo_h.npy')).unsqueeze(0)
 
-img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects,"torpedo":torpedo, "NPS":nps, "glider":glider, "AUV":auv} # here, you can add your own custom objects
+img_dict = {"Airfoil" : airfoil, "Airfoil_h": airfoil_h,
+			"Flat_fin" : flat_fin, "Flat_fin_h": flat_fin_h,
+			"Glider" : glider, "Glider_h": glider_h,
+			"Torpedo" : torpedo, "Torpedo_h": torpedo_h,
+			"Sphere" : sphere} # here, you can add your own custom objects
 
+# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"
 
 # My figures
 
@@ -29,7 +46,10 @@ img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objec
 rod_size=8
 
 class Dataset:
-	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,types=["image"],images=["torpedo"],mu_range=[0.1,5],rho_range=[0.1,5]):
+	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,
+			    max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,
+			    types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
+				mu_range=[0.1,5],rho_range=[0.1,5]):
 		"""
 		:w,h,d: width, height, depth (sizes in x,y,z direction)
 		:types: possibilities: "no_box","box","rod_y","rod_z","moving_rod_y","moving_rod_z","magnus_y","magnus_z","ball","image","benchmark"
