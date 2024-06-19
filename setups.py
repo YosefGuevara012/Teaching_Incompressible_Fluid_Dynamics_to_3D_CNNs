@@ -13,12 +13,23 @@ cyber = torch.tensor(np.load('imgs/voxel_grid_Cyber.npy')).unsqueeze(0)
 wing = torch.tensor(np.load('imgs/voxel_grid_Wing.npy')).unsqueeze(0)
 two_objects = torch.tensor(np.load('imgs/voxel_grid_2_objects.npy')).unsqueeze(0)
 three_objects = torch.tensor(np.load('imgs/voxel_grid_3_objects.npy')).unsqueeze(0)
-img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects} # here, you can add your own custom objects
+
+torpedo = torch.tensor(np.load('imgs/voxel_grid_torpedo.npy')).unsqueeze(0)
+nps = torch.tensor(np.load('imgs/voxel_grid_NPS.npy')).unsqueeze(0)
+glider = torch.tensor(np.load('imgs/voxel_grid_Glider.npy')).unsqueeze(0)
+auv = torch.tensor(np.load('imgs/voxel_grid_AUV.npy')).unsqueeze(0)
+
+img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects,"torpedo":torpedo, "NPS":nps, "glider":glider, "AUV":auv} # here, you can add your own custom objects
+
+
+# My figures
+
+
 
 rod_size=8
 
 class Dataset:
-	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,types=["box"],images=["suzanne"],mu_range=[0.1,5],rho_range=[0.1,5]):
+	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,types=["image"],images=["torpedo"],mu_range=[0.1,5],rho_range=[0.1,5]):
 		"""
 		:w,h,d: width, height, depth (sizes in x,y,z direction)
 		:types: possibilities: "no_box","box","rod_y","rod_z","moving_rod_y","moving_rod_z","magnus_y","magnus_z","ball","image","benchmark"
