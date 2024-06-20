@@ -15,6 +15,7 @@ tell(v,p): tell results for v(t+1),p(t+1) of batch
 # three_objects = torch.tensor(np.load('imgs/voxel_grid_3_objects.npy')).unsqueeze(0)
 # img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects,"torpedo":torpedo, "NPS":nps, "glider":glider, "AUV":auv} # here, you can add your own custom objects
 
+# My underwater objects
 # The "object_h" denotes the orientation of the object following a heave motion.
 
 airfoil = torch.tensor(np.load('imgs/voxel_grid_Airfoil.npy')).unsqueeze(0)
@@ -37,10 +38,10 @@ img_dict = {"Airfoil" : airfoil, "Airfoil_h": airfoil_h,
 			"Torpedo" : torpedo, "Torpedo_h": torpedo_h,
 			"Sphere" : sphere} # here, you can add your own custom objects
 
+
+
+# Images in the dict
 # "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"
-
-# My figures
-
 
 
 rod_size=8

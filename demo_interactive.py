@@ -89,13 +89,16 @@ animation_freq = 45
 animation_type = "sin"#"triangle"#
 aggregator = "mean"# "max"#
 
+# Images in the dict
+# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"
+
 with torch.no_grad():
 	while True:
 		
 		# initialize dataset
 		dataset = Dataset(params.width,params.height,params.depth,1,1,interactive=True,average_sequence_length=params.average_sequence_length,
 					      max_speed=params.max_speed,dt=params.dt,
-						  types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
+						  types=["image"],images=["Glider"],
 						  mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
 		# options for setup types: "magnus_y","magnus_z","no_box","rod_y","rod_z","moving_rod_y","moving_rod_z","box","benchmark","image","ball"
 		# options for images: "submarine","fish","cyber","wing","2_objects","3_objects"

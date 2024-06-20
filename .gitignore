@@ -4,3 +4,4 @@ vtk/**
 movies/**
 !/imgs/cover_imgs
 !/imgs/cover_imgs/**
+Logger/net UNet; hs 15; dt 4.0;/**
