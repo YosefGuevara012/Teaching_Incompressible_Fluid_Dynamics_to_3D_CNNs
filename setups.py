@@ -13,7 +13,7 @@ tell(v,p): tell results for v(t+1),p(t+1) of batch
 # wing = torch.tensor(np.load('imgs/voxel_grid_Wing.npy')).unsqueeze(0)
 # two_objects = torch.tensor(np.load('imgs/voxel_grid_2_objects.npy')).unsqueeze(0)
 # three_objects = torch.tensor(np.load('imgs/voxel_grid_3_objects.npy')).unsqueeze(0)
-# img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects,"torpedo":torpedo, "NPS":nps, "glider":glider, "AUV":auv} # here, you can add your own custom objects
+# img_dict = {"submarine":submarine,"fish":fish,"cyber":cyber,"wing":wing,"2_objects":two_objects,"3_objects":three_objects} # here, you can add your own custom objects
 
 # My underwater objects
 # The "object_h" denotes the orientation of the object following a heave motion.
@@ -56,17 +56,41 @@ class Dataset:
 		:types: possibilities: "no_box","box","rod_y","rod_z","moving_rod_y","moving_rod_z","magnus_y","magnus_z","ball","image","benchmark"
 		:images: if type is image, then there are the following possibilities: see img_dict
 		"""
+
+		initial_preasure = 0 # pressuare at 100 meters bellow water
 		self.w,self.h,self.d = w,h,d
 		self.batch_size = batch_size
 		self.dataset_size = dataset_size
 		self.average_sequence_length = average_sequence_length
 		self.a = torch.zeros(dataset_size,3,w,h,d)
 		self.p = torch.zeros(dataset_size,1,w,h,d)
+		self.p_2 = torch.full((dataset_size,1,w,h,d),initial_preasure) # custom pressuare
 		self.v_cond = torch.zeros(dataset_size,3,w,h,d)
 		self.mu_range = [np.log(mu_range[0]),np.log(mu_range[1])]
 		self.rho_range = [np.log(rho_range[0]),np.log(rho_range[1])]
 		self.mu = torch.exp(torch.rand(dataset_size,1,1,1,1)*(self.mu_range[1]-self.mu_range[0])+self.mu_range[0])
 		self.rho = torch.exp(torch.rand(dataset_size,1,1,1,1)*(self.rho_range[1]-self.rho_range[0])+self.rho_range[0])
+
+
+		# Device verification. 
+
+
+
+		# Verificación de estructura
+
+		if self.p.size() == self.p_2.size():
+			print("Los tensores tienen la misma estructura.")
+			print("self.p.size(): " + str(self.p.size()))
+			print("self.p_2.size(): " + str(self.p_2.size()))
+		else:
+			print("Los tensores tienen estructuras diferentes.")
+
+		# Verificación de dispositivo (si es necesario)
+		if self.p.device == self.p_2.device:
+			print("Los tensores están en el mismo dispositivo.")
+		else:
+			print("Los tensores están en dispositivos diferentes.")
+
 		
 		self.cond_mask = torch.zeros(dataset_size,1,w,h,d)
 		self.env_info = [{} for _ in range(dataset_size)]
@@ -296,9 +320,16 @@ class Dataset:
 			self.mousev = flow_v
 		
 		if type == "box":# block at random position
+
+
 			object_w = np.random.randint(3,15) # object width / 2
 			object_h = np.random.randint(3,15) # object height / 2
 			object_d = np.random.randint(3,15) # object depth / 2
+
+			print("object_w:" + str(object_w))
+			print("object_h:" + str(object_h))
+			print("object_d:" + str(object_d))
+
 			flow_v = self.max_speed*(np.random.rand()-0.5)*2
 			if flow_v>0:
 				object_x = np.random.randint(self.w//4-10,self.w//4+10)
