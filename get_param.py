@@ -35,7 +35,7 @@ def params():
 	parser.add_argument('--loss_mean_a', default=0, type=float, help='loss factor to keep mean of a around 0')
 	parser.add_argument('--loss_mean_p', default=0, type=float, help='loss factor to keep mean of p around 0')
 	parser.add_argument('--regularize_grad_p', default=0, type=float, help='regularizer for gradient of p. evt needed for very high reynolds numbers (default: 0)')
-	parser.add_argument('--max_speed', default=11, type=float, help='max speed for boundary conditions in dataset (default: 1)')
+	parser.add_argument('--max_speed', default=1, type=float, help='max speed for boundary conditions in dataset (default: 1)')
 	parser.add_argument('--lr', default=0.001, type=float, help='learning rate of optimizer (default: 0.001)')
 	parser.add_argument('--lr_grad', default=0.001, type=float, help='learning rate of optimizer (default: 0.001)')
 	parser.add_argument('--clip_grad_norm', default=None, type=float, help='gradient norm clipping (default: None)')
@@ -50,15 +50,15 @@ def params():
 	parser.add_argument('--loss_multiplier', default=1, type=float, help='multiply loss / gradients (default: 1)')
 	
 	# Setup parameters
-	parser.add_argument('--width', default=128, type=int, help='setup width')
+	parser.add_argument('--width', default=256, type=int, help='setup width')
 	parser.add_argument('--height', default=64, type=int, help='setup height')
 	parser.add_argument('--depth', default=64, type=int, help='setup depth')
 	
 	# Fluid parameters
-	parser.add_argument('--rho_min', default=0.001385, type=float, help='min of fluid density rho (default 0.1)')
-	parser.add_argument('--rho_max', default=0.001385, type=float, help='max of fluid density rho (default 15)')
-	parser.add_argument('--mu_min', default=0.000455, type=float, help='min of fluid viscosity mu (default 0.01)')
-	parser.add_argument('--mu_max', default=0.000455, type=float, help='max of fluid viscosity mu (default 8)')
+	parser.add_argument('--rho_min', default=5, type=float, help='min of fluid density rho (default 0.1)')
+	parser.add_argument('--rho_max', default=5, type=float, help='max of fluid density rho (default 15)')
+	parser.add_argument('--mu_min', default=0.01, type=float, help='min of fluid viscosity mu (default 0.01)')
+	parser.add_argument('--mu_max', default=0.1, type=float, help='max of fluid viscosity mu (default 8)')
 	parser.add_argument('--dt', default=1, type=float, help='timestep of fluid integrator')
 	
 	# Load parameters
