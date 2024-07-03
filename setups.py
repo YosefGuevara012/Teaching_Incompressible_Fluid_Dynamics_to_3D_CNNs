@@ -20,8 +20,8 @@ tell(v,p): tell results for v(t+1),p(t+1) of batch
 airfoil = torch.tensor(np.load('imgs/voxel_grid_Airfoil.npy')).unsqueeze(0)
 airfoil_h = torch.tensor(np.load('imgs/voxel_grid_Airfoil_h.npy')).unsqueeze(0)
 
-flat_fin = torch.tensor(np.load('imgs/voxel_grid_flat_fin.npy')).unsqueeze(0)
-flat_fin_h = torch.tensor(np.load('imgs/voxel_grid_flat_fin_h.npy')).unsqueeze(0)
+flat_fin = torch.tensor(np.load('imgs/voxel_grid_flat_fin_3D.npy')).unsqueeze(0)
+flat_fin_h = torch.tensor(np.load('imgs/voxel_grid_flat_fin_h_3D.npy')).unsqueeze(0)
 
 glider = torch.tensor(np.load('imgs/voxel_grid_Glider.npy')).unsqueeze(0)
 glider_h = torch.tensor(np.load('imgs/voxel_grid_Glider_h.npy')).unsqueeze(0)
