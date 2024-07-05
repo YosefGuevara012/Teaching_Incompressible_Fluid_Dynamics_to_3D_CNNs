@@ -457,7 +457,7 @@ class Dataset:
 			# self.mousey = object_y
 			# self.mousez = object_z
 			# self.mousev = flow_v
-			self.mousex = 16 + 5 + w/2 # 16D represents a 1-meter voxel representation, plus a 5D tick from the inlet layer, and half the width of the object to center it.
+			self.mousex = 16*3 + 5 + w/2 # 16D represents a 1-meter voxel representation, plus a 5D tick from the inlet layer, and half the width of the object to center it.
 			self.mousey = 32
 			self.mousez = 32
 			self.mousev = 1

@@ -89,6 +89,9 @@ animation_freq = 45
 animation_type = "sin"#"triangle"#
 aggregator = "mean"# "max"#
 
+start_recording_time = 900
+max_recording_iteration = 25
+
 # Images in the dict
 # "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"
 
@@ -278,7 +281,7 @@ with torch.no_grad():
 					w_pressed = False
 				
 				# print to VTK
-				if key==ord('p') or recording:
+				if key==ord('p') or recording or t >= start_recording_time:
 					name = dataset.env_info[0]["type"]
 					if name=="image":
 						name = name+"_"+dataset.env_info[0]["image"]
@@ -301,7 +304,7 @@ with torch.no_grad():
 				if key==ord('n'):
 					break
 				
-				if key==ord('q'):
+				if key==ord('q') or vtk_iteration == max_recording_iteration:
 					quit=True
 					break
 				
