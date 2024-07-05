@@ -98,7 +98,7 @@ with torch.no_grad():
 		# initialize dataset
 		dataset = Dataset(params.width,params.height,params.depth,1,1,interactive=True,average_sequence_length=params.average_sequence_length,
 					      max_speed=params.max_speed,dt=params.dt,
-						  types=["image"],images=["Flat_fin_h"],
+						  types=["image"],images=["Cube"],
 						  mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
 		# options for setup types: "magnus_y","magnus_z","no_box","rod_y","rod_z","moving_rod_y","moving_rod_z","box","benchmark","image","ball"
 		# options for images: "submarine","fish","cyber","wing","2_objects","3_objects"
@@ -192,6 +192,12 @@ with torch.no_grad():
 				print(f"mu: {dataset.mousemu.numpy()[0,0,0,0]}; rho: {dataset.mouserho.numpy()[0,0,0,0]}; v: {dataset.mousev}")
 				
 				key = cv2.waitKey(1)
+
+				if key==ord('o'):
+					dataset.mousev = 1
+					dataset.mousex = 29
+					dataset.mousey = 32
+					dataset.mousez = 32
 				
 				if key==ord('x'):
 					dataset.mousev+=0.1

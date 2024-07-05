@@ -18,11 +18,13 @@ tell(v,p): tell results for v(t+1),p(t+1) of batch
 # My underwater objects
 # The "object_h" denotes the orientation of the object following a heave motion.
 
+cube = torch.tensor(np.load('imgs/voxel_grid_Cube_16D.npy')).unsqueeze(0)
+
 airfoil = torch.tensor(np.load('imgs/voxel_grid_Airfoil.npy')).unsqueeze(0)
 airfoil_h = torch.tensor(np.load('imgs/voxel_grid_Airfoil_h.npy')).unsqueeze(0)
 
-flat_fin = torch.tensor(np.load('imgs/voxel_grid_flat_fin.npy')).unsqueeze(0)
-flat_fin_h = torch.tensor(np.load('imgs/voxel_grid_flat_fin_h.npy')).unsqueeze(0)
+flat_fin = torch.tensor(np.load('imgs/voxel_grid_flat_fin_3D.npy')).unsqueeze(0)
+flat_fin_h = torch.tensor(np.load('imgs/voxel_grid_flat_fin_h_3D.npy')).unsqueeze(0)
 
 glider = torch.tensor(np.load('imgs/voxel_grid_Glider.npy')).unsqueeze(0)
 glider_h = torch.tensor(np.load('imgs/voxel_grid_Glider_h.npy')).unsqueeze(0)
@@ -36,12 +38,12 @@ img_dict = {"Airfoil" : airfoil, "Airfoil_h": airfoil_h,
 			"Flat_fin" : flat_fin, "Flat_fin_h": flat_fin_h,
 			"Glider" : glider, "Glider_h": glider_h,
 			"Torpedo" : torpedo, "Torpedo_h": torpedo_h,
-			"Sphere" : sphere} # here, you can add your own custom objects
+			"Sphere" : sphere, "Cube": cube}  # here, you can add your own custom objects
 
 
 
 # Images in the dict
-# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"
+# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube"
 
 
 rod_size=8
@@ -49,7 +51,7 @@ rod_size=8
 class Dataset:
 	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,
 			    max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,
-			    types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
+			    types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube"],
 				mu_range=[0.1,5],rho_range=[0.1,5]):
 		"""
 		:w,h,d: width, height, depth (sizes in x,y,z direction)
@@ -326,9 +328,9 @@ class Dataset:
 			object_h = np.random.randint(3,15) # object height / 2
 			object_d = np.random.randint(3,15) # object depth / 2
 
-			print("object_w:" + str(object_w))
-			print("object_h:" + str(object_h))
-			print("object_d:" + str(object_d))
+			# print("object_w:" + str(object_w))
+			# print("object_h:" + str(object_h))
+			# print("object_d:" + str(object_d))
 
 			flow_v = self.max_speed*(np.random.rand()-0.5)*2
 			if flow_v>0:
@@ -444,9 +446,12 @@ class Dataset:
 			self.env_info[index]["vz"] = object_vz
 			self.env_info[index]["image"] = image
 			self.env_info[index]["flow_v"] = flow_v
-			self.mousex = object_x
-			self.mousey = object_y
-			self.mousez = object_z
+			# self.mousex = object_x
+			# self.mousey = object_y
+			# self.mousez = object_z
+			self.mousex = 16+5+8
+			self.mousey = 32
+			self.mousez = 32
 			self.mousev = flow_v
 		
 		if type=="ball":
