@@ -20,6 +20,8 @@ tell(v,p): tell results for v(t+1),p(t+1) of batch
 
 cube = torch.tensor(np.load('imgs/voxel_grid_Cube_16D.npy')).unsqueeze(0)
 
+ROV = torch.tensor(np.load('imgs/voxel_grid_ROV.npy')).unsqueeze(0)
+
 airfoil = torch.tensor(np.load('imgs/voxel_grid_Airfoil.npy')).unsqueeze(0)
 airfoil_h = torch.tensor(np.load('imgs/voxel_grid_Airfoil_h.npy')).unsqueeze(0)
 
@@ -38,12 +40,13 @@ img_dict = {"Airfoil" : airfoil, "Airfoil_h": airfoil_h,
 			"Flat_fin" : flat_fin, "Flat_fin_h": flat_fin_h,
 			"Glider" : glider, "Glider_h": glider_h,
 			"Torpedo" : torpedo, "Torpedo_h": torpedo_h,
-			"Sphere" : sphere, "Cube": cube}  # here, you can add your own custom objects
+			"Sphere" : sphere, "Cube": cube,
+			"ROV":ROV}  # here, you can add your own custom objects
 
 
 
 # Images in the dict
-# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube"
+# "Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube", "ROV"
 
 
 rod_size=8
@@ -51,7 +54,7 @@ rod_size=8
 class Dataset:
 	def __init__(self,w,h,d,batch_size=100,dataset_size=1000,average_sequence_length=5000,interactive=False,
 			    max_speed=3,brown_damping=0.9995,brown_velocity=0.005,init_velocity=0,dt=1,
-			    types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube"],
+			    types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere", "Cube", "ROV"],
 				mu_range=[0.1,5],rho_range=[0.1,5]):
 		"""
 		:w,h,d: width, height, depth (sizes in x,y,z direction)
@@ -59,14 +62,14 @@ class Dataset:
 		:images: if type is image, then there are the following possibilities: see img_dict
 		"""
 
-		initial_preasure = 0 # pressuare at 100 meters bellow water
+		# initial_preasure = 0 # pressuare at 100 meters bellow water
 		self.w,self.h,self.d = w,h,d
 		self.batch_size = batch_size
 		self.dataset_size = dataset_size
 		self.average_sequence_length = average_sequence_length
 		self.a = torch.zeros(dataset_size,3,w,h,d)
 		self.p = torch.zeros(dataset_size,1,w,h,d)
-		self.p_2 = torch.full((dataset_size,1,w,h,d),initial_preasure) # custom pressuare
+		# self.p_2 = torch.full((dataset_size,1,w,h,d),initial_preasure) # custom pressuare
 		self.v_cond = torch.zeros(dataset_size,3,w,h,d)
 		self.mu_range = [np.log(mu_range[0]),np.log(mu_range[1])]
 		self.rho_range = [np.log(rho_range[0]),np.log(rho_range[1])]
@@ -78,20 +81,20 @@ class Dataset:
 
 
 
-		# Verificación de estructura
+		# Pressure Structure verification
 
-		if self.p.size() == self.p_2.size():
-			print("Los tensores tienen la misma estructura.")
-			print("self.p.size(): " + str(self.p.size()))
-			print("self.p_2.size(): " + str(self.p_2.size()))
-		else:
-			print("Los tensores tienen estructuras diferentes.")
+		# if self.p.size() == self.p_2.size():
+		# 	print("Los tensores tienen la misma estructura.")
+		# 	print("self.p.size(): " + str(self.p.size()))
+		# 	print("self.p_2.size(): " + str(self.p_2.size()))
+		# else:
+		# 	print("Los tensores tienen estructuras diferentes.")
 
-		# Verificación de dispositivo (si es necesario)
-		if self.p.device == self.p_2.device:
-			print("Los tensores están en el mismo dispositivo.")
-		else:
-			print("Los tensores están en dispositivos diferentes.")
+		# # Verificación de dispositivo (si es necesario)
+		# if self.p.device == self.p_2.device:
+		# 	print("Los tensores están en el mismo dispositivo.")
+		# else:
+		# 	print("Los tensores están en dispositivos diferentes.")
 
 		
 		self.cond_mask = torch.zeros(dataset_size,1,w,h,d)
@@ -428,6 +431,10 @@ class Dataset:
 			object_vz = self.init_velocity*(np.random.rand()-0.5)*2
 			
 			w,h,d = image_mask.shape[1],image_mask.shape[2],image_mask.shape[3]
+
+			# print("w: " + str(w)) 
+			# print("h: " + str(h))
+			# print("d: " + str(d))
 			self.cond_mask[index,:,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = image_mask
 			self.v_cond[index,0,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vx
 			self.v_cond[index,1,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vy
@@ -449,10 +456,14 @@ class Dataset:
 			# self.mousex = object_x
 			# self.mousey = object_y
 			# self.mousez = object_z
-			self.mousex = 16+5+8
+			# self.mousev = flow_v
+			self.mousex = 16 + 5 + w/2 # 16D represents a 1-meter voxel representation, plus a 5D tick from the inlet layer, and half the width of the object to center it.
 			self.mousey = 32
 			self.mousez = 32
-			self.mousev = flow_v
+			self.mousev = 1
+			# self.mousemu= 2
+			# self.mouserho=1
+
 		
 		if type=="ball":
 			object_r = np.random.randint(3,15) # object radius / 2
@@ -1217,6 +1228,7 @@ class Dataset:
 		if self.interactive:
 			self.mousev = min(max(self.mousev,-self.max_speed),self.max_speed)
 			self.mousew = min(max(self.mousew,-self.max_speed),self.max_speed)
+			# print(type(self.mousemu))
 			self.mousemu[0] = min(max(self.mousemu.clone(),np.exp(self.mu_range[0])),np.exp(self.mu_range[1]))
 			self.mouserho[0] = min(max(self.mouserho.clone(),np.exp(self.rho_range[0])),np.exp(self.rho_range[1]))
 		

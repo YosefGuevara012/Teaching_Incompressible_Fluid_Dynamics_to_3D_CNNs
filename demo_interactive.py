@@ -193,11 +193,11 @@ with torch.no_grad():
 				
 				key = cv2.waitKey(1)
 
-				if key==ord('o'):
-					dataset.mousev = 1
-					dataset.mousex = 29
-					dataset.mousey = 32
-					dataset.mousez = 32
+				# if key==ord('o'):
+				# 	dataset.mousev = 1
+				# 	dataset.mousex = 29
+				# 	dataset.mousey = 32
+				# 	dataset.mousez = 32
 				
 				if key==ord('x'):
 					dataset.mousev+=0.1
