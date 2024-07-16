@@ -222,21 +222,21 @@ with torch.no_grad():
 				elif key==ord('c'):
 					dataset.mouserho/=1.05
 					
-				elif key==ord('1'):
-					dataset.mousemu=5
-					dataset.mouserho=0.2
+				elif key==ord('1'): # Re: 64 time reversible flow
+					dataset.mousemu= torch.tensor([[[[5]]]])
+					dataset.mouserho= torch.tensor([[[[0.2]]]])
 					dataset.mousev=-1
-				elif key==ord('2'):
+				elif key==ord('2'): 
 					dataset.mousemu=0.5
 					dataset.mouserho=1
 					dataset.mousev=-1
-				elif key==ord('3'):
-					dataset.mousemu=0.2
-					dataset.mouserho=1
+				elif key==ord('3'): # Re: 80 Laminar Flow
+					dataset.mousemu= torch.tensor([[[[0.2]]]])
+					dataset.mouserho=torch.tensor([[[[1]]]])
 					dataset.mousev=-1
-				elif key==ord('4'):
-					dataset.mousemu=0.1
-					dataset.mouserho=5
+				elif key==ord('4'): # Re: 800 Turbulent flow
+					dataset.mousemu=torch.tensor([[[[0.1]]]])
+					dataset.mouserho=torch.tensor([[[[0.5]]]])
 					dataset.mousev=-1
 				elif key==ord('5'):
 					dataset.mousemu=0.02
