@@ -50,7 +50,7 @@ def params():
 	parser.add_argument('--loss_multiplier', default=1, type=float, help='multiply loss / gradients (default: 1)')
 	
 	# Setup parameters
-	parser.add_argument('--width', default=256, type=int, help='setup width')
+	parser.add_argument('--width', default=128, type=int, help='setup width')
 	parser.add_argument('--height', default=64, type=int, help='setup height')
 	parser.add_argument('--depth', default=64, type=int, help='setup depth')
 	

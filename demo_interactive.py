@@ -116,6 +116,14 @@ with torch.no_grad():
 			
 			# get dirichlet boundary conditions, fluid domain, vector potential (streamfunction), pressure field, mu, rho from dataset:
 			v_cond,cond_mask,a_old,p_old,mu,rho = toCuda(dataset.ask())
+			# print("v_cond") # Contiene las velocidades específicas que se deben imponer en los bordes del dominio del fluido.
+			# print(v_cond.shape)
+			
+			cond_mask_numpy = cond_mask.cpu().numpy()
+			# print("cond_mask_squeezed")
+			# cond_mask_squeezed = np.squeeze(cond_mask_numpy, axis=(0,1))
+			# print(cond_mask_squeezed.shape)
+			# np.save(f"voxel_grid_cond_mask_squeezed.npy",cond_mask_squeezed)
 			
 			v_cond = d.normal2staggered(v_cond) # map dirichlet boundary conditions onto staggered grid
 			
@@ -225,23 +233,23 @@ with torch.no_grad():
 				elif key==ord('1'): # Re: 64 time reversible flow
 					dataset.mousemu= torch.tensor([[[[5]]]])
 					dataset.mouserho= torch.tensor([[[[0.2]]]])
-					dataset.mousev=-1
+					dataset.mousev=1
 				elif key==ord('2'): 
-					dataset.mousemu=0.5
-					dataset.mouserho=1
-					dataset.mousev=-1
+					dataset.mousemu=torch.tensor([[[[0.5]]]])
+					dataset.mouserho=torch.tensor([[[[1]]]])
+					dataset.mousev=1
 				elif key==ord('3'): # Re: 80 Laminar Flow
 					dataset.mousemu= torch.tensor([[[[0.2]]]])
 					dataset.mouserho=torch.tensor([[[[1]]]])
-					dataset.mousev=-1
+					dataset.mousev=1
 				elif key==ord('4'): # Re: 800 Turbulent flow
 					dataset.mousemu=torch.tensor([[[[0.1]]]])
 					dataset.mouserho=torch.tensor([[[[0.5]]]])
-					dataset.mousev=-1
+					dataset.mousev=1
 				elif key==ord('5'):
-					dataset.mousemu=0.02
-					dataset.mouserho=10
-					dataset.mousev=-1
+					dataset.mousemu=torch.tensor([[[[0.02]]]])
+					dataset.mouserho=torch.tensor([[[[10]]]])
+					dataset.mousev=1
 				
 				if key==ord('r'):
 					if dataset.env_info[0]["type"] == "image":
