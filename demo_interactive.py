@@ -69,6 +69,46 @@ def mousePosition_yz(event,x,y,flags,param):
 		dataset.mousey = y
 		dataset.mousez = x
 
+# My functions: 
+
+thickness = 7
+
+def create_box_matrix(shape):
+    # # Verificar que la forma tenga al menos 3 en cada dimensión
+    # if any(s < 3 for s in shape):
+    #     raise ValueError("Las dimensiones deben ser al menos 3 para crear una caja cerrada.")
+	
+	# # Verificar que la forma y el grosor sean adecuados
+    # if any(s < 2 * 5 for s in shape):
+    #     raise ValueError(f"Las dimensiones deben ser al menos {2 * thickness} para crear una caja con grosor de {thickness}.")
+	
+
+	# Crear un tensor de ceros con la forma deseada
+    tensor = torch.zeros(shape, dtype=torch.int)
+
+    # Establecer los bordes con el grosor deseado a unos
+    tensor[:, :, :thickness, :, :] = 1
+    tensor[:, :, -thickness:, :, :] = 1
+    tensor[:, :, :, :thickness, :] = 1
+    tensor[:, :, :, -thickness:, :] = 1
+    tensor[:, :, :, :, :thickness] = 1
+    tensor[:, :, :, :, -thickness:] = 1
+
+
+    # # Crear una matriz de ceros con la forma deseada
+    # matrix = np.zeros(shape, dtype=int)
+
+    # # Establecer los bordes a unos
+    # matrix[:5, :, :] = 1
+    # matrix[-5:, :, :] = 1
+    # matrix[:, :thickness, :] = 1
+    # matrix[:, -thickness:, :] = 1
+    # matrix[:, :, :thickness] = 1
+    # matrix[:, :, -thickness:] = 1
+
+
+    return tensor
+
 cv2.setMouseCallback("v xy",mousePosition_xy)
 cv2.setMouseCallback("v xz",mousePosition_xz)
 cv2.setMouseCallback("v yz",mousePosition_yz)
@@ -116,15 +156,25 @@ with torch.no_grad():
 			
 			# get dirichlet boundary conditions, fluid domain, vector potential (streamfunction), pressure field, mu, rho from dataset:
 			v_cond,cond_mask,a_old,p_old,mu,rho = toCuda(dataset.ask())
-			# print("v_cond") # Contiene las velocidades específicas que se deben imponer en los bordes del dominio del fluido.
-			# print(v_cond.shape)
+
+			# My code -------------------------------------------------------------------------------------------------
+			# # print("v_cond") # Contiene las velocidades específicas que se deben imponer en los bordes del dominio del fluido.
+			# # print(v_cond.shape)
 			
-			cond_mask_numpy = cond_mask.cpu().numpy()
-			# print("cond_mask_squeezed")
+			# cond_mask_numpy = cond_mask.cpu().numpy()
+			# # print("cond_mask_squeezed")
 			# cond_mask_squeezed = np.squeeze(cond_mask_numpy, axis=(0,1))
-			# print(cond_mask_squeezed.shape)
-			# np.save(f"voxel_grid_cond_mask_squeezed.npy",cond_mask_squeezed)
-			
+
+			# box_matrix = create_box_matrix(cond_mask_squeezed.shape)
+			# # print(cond_mask_squeezed.shape)
+
+			# cond_mask_bundaries_removed = cond_mask_squeezed - box_matrix
+			# np.save(f"voxel_grid_cond_mask_bundaries_removed.npy",cond_mask_bundaries_removed)
+			#  ----------------------------------------------------------------------------------------------------------
+			# print(cond_mask.size())
+
+			cond_mask_bundaries_removed = create_box_matrix(cond_mask.size()).to('cuda')
+			cond_mask = torch.sub(cond_mask,cond_mask_bundaries_removed)
 			v_cond = d.normal2staggered(v_cond) # map dirichlet boundary conditions onto staggered grid
 			
 			a_new,p_new = pde_cnn(a_old,p_old,v_cond,cond_mask,mu,rho) # apply fluid model on fluid state and boundary conditions
