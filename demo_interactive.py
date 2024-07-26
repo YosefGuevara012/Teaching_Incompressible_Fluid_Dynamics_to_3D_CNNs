@@ -170,11 +170,14 @@ with torch.no_grad():
 
 			# cond_mask_bundaries_removed = cond_mask_squeezed - box_matrix
 			# np.save(f"voxel_grid_cond_mask_bundaries_removed.npy",cond_mask_bundaries_removed)
-			#  ----------------------------------------------------------------------------------------------------------
-			# print(cond_mask.size())
 
-			cond_mask_bundaries_removed = create_box_matrix(cond_mask.size()).to('cuda')
-			cond_mask = torch.sub(cond_mask,cond_mask_bundaries_removed)
+			# print(cond_mask.size())
+			# Mask added as a tensor to remove the boundary layers.
+			# cond_mask_bundaries_removed = create_box_matrix(cond_mask.size()).to('cuda')
+			# cond_mask = torch.sub(cond_mask,cond_mask_bundaries_removed)
+
+			#  ----------------------------------------------------------------------------------------------------------
+
 			v_cond = d.normal2staggered(v_cond) # map dirichlet boundary conditions onto staggered grid
 			
 			a_new,p_new = pde_cnn(a_old,p_old,v_cond,cond_mask,mu,rho) # apply fluid model on fluid state and boundary conditions
