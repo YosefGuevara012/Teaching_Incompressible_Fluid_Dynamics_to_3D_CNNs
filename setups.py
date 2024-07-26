@@ -427,14 +427,16 @@ class Dataset:
 			print("self.h: " + str(self.h))
 			print("self.d: " + str(self.d))
 		
-			flow_v = self.max_speed*(np.random.rand()-0.5)*2
+			# flow_v = self.max_speed*(np.random.rand()-0.5)*2
 			# if flow_v>0:
 			# 	object_x = np.random.randint(self.w//4-5,self.w//4+5)
 			# else:
 			# 	object_x = np.random.randint(3*self.w//4-5,3*self.w//4+5)
 			# object_y = np.random.randint(self.h//2-5,self.h//2+5)
 			# object_z = np.random.randint(self.d//2-5,self.d//2+5)
-			object_x = 16 + 5 + 8
+			w,h,d = image_mask.shape[1],image_mask.shape[2],image_mask.shape[3]
+			flow_v = 1
+			object_x = 16 + 5 + int(w/2)
 			object_y = 32
 			object_z = 32
 
@@ -442,19 +444,19 @@ class Dataset:
 			object_vy = self.init_velocity*(np.random.rand()-0.5)*2
 			object_vz = self.init_velocity*(np.random.rand()-0.5)*2
 
-			print("object_x: " + str(object_x)) 
-			print("object_y: " + str(object_y))
-			print("object_z: " + str(object_z))
+			# print("object_x: " + str(object_x)) 
+			# print("object_y: " + str(object_y))
+			# print("object_z: " + str(object_z))
 
-			print("object_vx: " + str(object_vx)) 
-			print("object_vy: " + str(object_vy))
-			print("object_vz: " + str(object_vz))
+			# print("object_vx: " + str(object_vx)) 
+			# print("object_vy: " + str(object_vy))
+			# print("object_vz: " + str(object_vz))
 			
-			w,h,d = image_mask.shape[1],image_mask.shape[2],image_mask.shape[3]
+			# w,h,d = image_mask.shape[1],image_mask.shape[2],image_mask.shape[3]
 
-			print("w: " + str(w)) 
-			print("h: " + str(h))
-			print("d: " + str(d))
+			# print("w: " + str(w)) 
+			# print("h: " + str(h))
+			# print("d: " + str(d))
 			self.cond_mask[index,:,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = image_mask
 			self.v_cond[index,0,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vx
 			self.v_cond[index,1,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vy
@@ -476,11 +478,11 @@ class Dataset:
 			self.mousex = object_x
 			self.mousey = object_y
 			self.mousez = object_z
-			# self.mousev = flow_v
+			self.mousev = flow_v
 			# self.mousex = 16*3 + 5 + w/2 # 16D represents a 1-meter voxel representation, plus a 5D tick from the inlet layer, and half the width of the object to center it.
 			# self.mousey = 32
 			# self.mousez = 32
-			self.mousev = 1
+			# self.mousev = 1
 			# print("self.mousemu: " + str(self.mousemu))
 			self.mousemu= torch.tensor([[[[0.2]]]])
 			self.mouserho=torch.tensor([[[[1]]]])
