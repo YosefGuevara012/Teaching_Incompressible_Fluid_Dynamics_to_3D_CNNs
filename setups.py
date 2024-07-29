@@ -142,6 +142,10 @@ class Dataset:
 		self.cond_mask[index,:,:,(self.h-3):self.h,:]=1
 		self.cond_mask[index,:,:,:,0:3]=1
 		self.cond_mask[index,:,:,:,(self.d-3):self.d]=1
+
+
+		self.object_mask = torch.zeros(1,1, self.w, self.h, self.d)
+		print("self.object_mask: " + str(self.object_mask.shape))
 		
 		type = np.random.choice(self.types)
 		
@@ -434,6 +438,8 @@ class Dataset:
 			# 	object_x = np.random.randint(3*self.w//4-5,3*self.w//4+5)
 			# object_y = np.random.randint(self.h//2-5,self.h//2+5)
 			# object_z = np.random.randint(self.d//2-5,self.d//2+5)
+
+			#initial velocity flow and initial conditions
 			w,h,d = image_mask.shape[1],image_mask.shape[2],image_mask.shape[3]
 			flow_v = 1
 			object_x = 16 + 5 + int(w/2)
@@ -444,9 +450,9 @@ class Dataset:
 			object_vy = self.init_velocity*(np.random.rand()-0.5)*2
 			object_vz = self.init_velocity*(np.random.rand()-0.5)*2
 
-			# print("object_x: " + str(object_x)) 
-			# print("object_y: " + str(object_y))
-			# print("object_z: " + str(object_z))
+			print("object_x: " + str(object_x)) 
+			print("object_y: " + str(object_y))
+			print("object_z: " + str(object_z))
 
 			# print("object_vx: " + str(object_vx)) 
 			# print("object_vy: " + str(object_vy))
@@ -457,7 +463,11 @@ class Dataset:
 			# print("w: " + str(w)) 
 			# print("h: " + str(h))
 			# print("d: " + str(d))
-			self.cond_mask[index,:,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = image_mask
+			# self.cond_mask[index,:,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = image_mask
+			# print("self.cond_mask: " + str(self.cond_mask.shape))
+			
+
+			self.object_mask[index,:,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = image_mask
 			self.v_cond[index,0,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vx
 			self.v_cond[index,1,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vy
 			self.v_cond[index,2,(object_x-w//2):(object_x-w//2+w),(object_y-h//2):(object_y-h//2+h),(object_z-d//2):(object_z-d//2+d)] = object_vz
