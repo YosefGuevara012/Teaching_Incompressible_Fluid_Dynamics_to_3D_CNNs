@@ -35,7 +35,7 @@ if params.load_latest or params.load_date_time is not None or params.load_index 
 params.load_index = 0 if params.load_index is None else params.load_index
 
 # initialize dataset
-dataset = Dataset(params.estwidth,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,
+dataset = Dataset(params.width,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,
 				  types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
 				  mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
 
