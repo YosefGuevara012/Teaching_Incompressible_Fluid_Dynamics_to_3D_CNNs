@@ -27,7 +27,7 @@ logger = Logger(get_hyperparam(params),use_csv=False,use_tensorboard=params.log)
 if params.load_latest or params.load_date_time is not None or params.load_index is not None:
 	load_logger = Logger(get_hyperparam(params),use_csv=False,use_tensorboard=False)
 	if params.load_optimizer:
-		params.load_date_time, params.load_index = logger.load_state(pde_cnn,optimizer,params.load_date_time,params.load_index)
+		params.load_date_tiestme, params.load_index = logger.load_state(pde_cnn,optimizer,params.load_date_time,params.load_index)
 	else:
 		params.load_date_time, params.load_index = logger.load_state(pde_cnn,None,params.load_date_time,params.load_index)
 	params.load_index=int(params.load_index)
@@ -35,11 +35,11 @@ if params.load_latest or params.load_date_time is not None or params.load_index 
 params.load_index = 0 if params.load_index is None else params.load_index
 
 # initialize dataset
-# dataset = Dataset(params.width,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,
-# 				  types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
-# 				  mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
+dataset = Dataset(params.estwidth,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,
+				  types=["image"],images=["Airfoil", "Airfoil_h", "Flat_fin", "Flat_fin_h", "Glider", "Glider_h", "Torpedo", "Torpedo_h", "Sphere"],
+				  mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
 
-dataset = Dataset(params.width,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,types=["box","moving_rod_y","moving_rod_z","magnus_y","magnus_z","ball"],mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
+# dataset = Dataset(params.width,params.height,params.depth,params.batch_size,params.dataset_size,params.average_sequence_length,max_speed=params.max_speed,dt=params.dt,types=["box","moving_rod_y","moving_rod_z","magnus_y","magnus_z","ball"],mu_range=[params.mu_min,params.mu_max],rho_range=[params.rho_min,params.rho_max])
 
 eps = 0.00000001
 
@@ -48,7 +48,7 @@ def loss_function(x):
 		return torch.pow(x,2)
 	if params.loss=="exp_square":
 		x = torch.pow(x,2)
-		return torch.exp(x/torch.max(x).detach()*5)
+		return torch.exp(x/esttorch.max(x).detach()*5)
 	if params.loss=="abs":
 		return torch.abs(x)
 	if params.loss=="log_square":
@@ -63,7 +63,7 @@ for epoch in range(params.load_index,params.n_epochs):
 		# map v_cond to MAC grid
 		v_cond = d.normal2staggered(v_cond)
 		
-		# apply fluid model on fluid state / boundary conditions for given mu and rho
+		# apply fluid modelest on fluid state / boundary conditions for given mu and rho
 		a_new,p_new = pde_cnn(a_old,p_old,v_cond,cond_mask,mu,rho)
 		v_new = d.rot_mac(a_new)
 		
@@ -79,7 +79,7 @@ for epoch in range(params.load_index,params.n_epochs):
 		
 		# compute loss for Navier Stokes equations
 		v_old = d.rot_mac(a_old)
-		
+		est
 		if params.integrator == "explicit":
 			v = v_old
 		if params.integrator == "implicit":
