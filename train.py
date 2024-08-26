@@ -79,7 +79,7 @@ for epoch in range(params.load_index,params.n_epochs):
 		
 		# compute loss for Navier Stokes equations
 		v_old = d.rot_mac(a_old)
-		est
+
 		if params.integrator == "explicit":
 			v = v_old
 		if params.integrator == "implicit":
